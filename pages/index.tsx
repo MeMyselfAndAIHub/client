@@ -161,7 +161,7 @@ export default function Home() {
               assistant <span className="blueText">Iris</span> is by your side,
               preserving and sharing your cherished memories.
             </p>
-            <Link href="/">Learn More &gt;</Link>
+            <Link href="/application">Launch App &gt;</Link>
           </div>
           <Image
             src="/illustration/heroIllustration.png"

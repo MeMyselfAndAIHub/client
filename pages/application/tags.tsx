@@ -272,7 +272,7 @@ export default function Tags() {
                       backgroundColor: ROUTINE_IMPORTANCE[tag.importance],
                     }}
                   >
-                    <h3>{tag.name}</h3>
+                    <h3>#{tag.name}</h3>
                     <p>{tag.summary}</p>
                   </div>
                 );

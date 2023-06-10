@@ -35,7 +35,7 @@ export const Navbar = ({ setShowPopup, noSignUp }) => {
 
         {isConnected && (
           <Link href="/application" className={styles.navText}>
-            Reminders
+            Upkeeps
           </Link>
         )}
 
@@ -60,8 +60,11 @@ export const Navbar = ({ setShowPopup, noSignUp }) => {
 
       <div className={styles.buttons}>
         {isConnected && (
-          <Link href="/application" className={styles.navButtonsOne}>
-            Launch App
+          <Link
+            href="https://francis-4.gitbook.io/me-myself-and-a.i/"
+            className={styles.navButtonsOne}
+          >
+            Docs
           </Link>
         )}
 
