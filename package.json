@@ -9,12 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.15",
+    "@lit-protocol/lit-node-client": "^2.2.23",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
+    "graphql": "^16.6.0",
+    "langchain": "^0.0.91",
     "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "viem": "^1.0.0",
+    "w3name": "^1.0.8",
+    "wagmi": "^1.1.0",
+    "web3.storage": "^4.5.4"
   }
 }

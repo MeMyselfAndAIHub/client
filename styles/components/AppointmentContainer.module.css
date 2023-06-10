@@ -1,0 +1,228 @@
+.appointmentContainer {
+  width: 90%;
+  margin: 40px auto;
+  position: relative;
+}
+
+.title {
+  display: flex;
+}
+
+.titleBlur {
+  display: flex;
+  filter: blur(4px);
+}
+
+.title h3,
+.titleBlur h3 {
+  color: #070707;
+  font-size: 28px;
+  margin-right: 20px;
+}
+
+.title button,
+.titleBlur button {
+  background-color: #6495ed;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 10px;
+}
+
+.appointmentBoxes {
+  width: 95%;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.appointmentBoxesBlur {
+  width: 95%;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  filter: blur(4px);
+}
+
+.appointmentBox {
+  box-shadow: 1px 1px 20px #e3e3e3;
+  padding: 30px 25px;
+  border-radius: 20px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px;
+}
+
+.importance {
+  margin: 18px 0px;
+}
+
+.importance h4 {
+  font-size: 16px;
+  color: #595959;
+  margin-bottom: 10px;
+}
+
+.importance .importanceBar {
+  width: 80%;
+  height: 14px;
+  border-radius: 20px;
+}
+
+.appointmentDescription {
+  margin: 12px 0px;
+}
+
+.appointmentDescription h4 {
+  font-size: 16px;
+  color: #595959;
+  margin-bottom: 10px;
+}
+
+.appointmentDescription p {
+  font-size: 14px;
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+}
+
+.days {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin: 18px 0px;
+  margin-right: 10px;
+}
+
+.day {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  margin-right: 6px;
+  font-size: 15px;
+}
+
+.location {
+  margin: 10px 0px;
+}
+
+.location h4 {
+  font-size: 16px;
+  color: #595959;
+  margin-bottom: 10px;
+}
+
+.location p {
+  font-size: 14px;
+}
+
+/* POP UP */
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background-color: white;
+  padding: 50px 30px;
+  box-shadow: 1px 1px 20px #e6e6e6;
+  border-radius: 20px;
+}
+
+.createTitle {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.createTitle p {
+  font-size: 22px;
+  margin-right: 20px;
+  font-weight: 500;
+}
+
+.createTitle img {
+  width: 25px;
+  height: auto;
+}
+
+.popup h5 {
+  font-size: 14px;
+  color: #444444;
+  margin-bottom: 14px;
+}
+
+.createAppointmentDescriptionInput {
+  background-color: #f2f2f2;
+  color: #000;
+  padding: 14px 14px;
+  font-size: 17px;
+  border-radius: 18px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: flex-start;
+  border: none;
+  height: 100px;
+  width: 90%;
+}
+
+.createLocationDescriptionInput {
+  background-color: #f2f2f2;
+  color: #000;
+  padding: 14px 14px;
+  font-size: 17px;
+  border-radius: 18px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: flex-start;
+  border: none;
+  height: 100px;
+  width: 90%;
+}
+
+.importanceColors {
+  display: flex;
+  align-items: center;
+  margin: 20px 0px;
+}
+
+.importanceColor {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  margin: 0px 12px 0px 0px;
+}
+
+.createImportance {
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.createImportance h6 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.createImportance span {
+  color: #009eff;
+}
+
+.popup button {
+  display: block;
+  background-color: #009eff;
+  color: #fff;
+  font-size: 17px;
+  padding: 10px 14px;
+  border-radius: 10px;
+}

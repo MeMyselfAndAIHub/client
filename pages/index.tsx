@@ -1,11 +1,144 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-
-const inter = Inter({ subsets: ['latin'] })
+import Head from "next/head";
+import Image from "next/image";
+import styles from "@/styles/Home.module.css";
+import { Navbar } from "@/components/Navbar";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Lit } from "@/helpers/lit";
+import { W3Storage } from "@/helpers/storage";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/contractInfo";
+import {
+  ADDRESS_ZERO,
+  CAN_DECRYPT_FUNCTION_ABI,
+  SIGNING_KEY_FILE_TYPE,
+} from "@/utils/helpers";
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useContractRead,
+  useConnect,
+} from "wagmi";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { Router, useRouter } from "next/router";
 
 export default function Home() {
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>("");
+  const [aid, setAid] = useState("");
+  const [memoryStringName, setMemoryStringName] = useState("");
+  const [signingKeyCid, setSigningKeyCid] = useState("");
+  const [signUpProcess, setSignUpProcess] = useState("");
+
+  const w3Storage = new W3Storage();
+  const lit = new Lit();
+
+  const { address: account } = useAccount();
+  const connector = new MetaMaskConnector();
+  const { connect } = useConnect();
+
+  const router = useRouter();
+
+  // get user iris id for sign up
+  const { data: userExpectedIrisId } = useContractRead({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: "get_next_iris_id",
+  });
+
+  // smart contract sign up
+  const { config: signUpConfig, error } = usePrepareContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: "create_account",
+    args: [userName, aid, memoryStringName, signingKeyCid],
+  });
+
+  const {
+    isLoading: signingUp,
+    isSuccess: signedUp,
+    write: signUpWrite,
+  } = useContractWrite({
+    ...signUpConfig,
+    onSettled() {
+      router.push("/application");
+    },
+  });
+
+  const SignUp = async () => {
+    setSignUpProcess("1");
+    // create w3name
+    const { keyString, nameString } = await w3Storage.createName(
+      //@ts-ignore
+      userExpectedIrisId.toString()
+    );
+    setMemoryStringName(nameString);
+
+    // access control condition
+    const chain = "mumbai";
+    const evmContractConditions = [
+      {
+        contractAddress: CONTRACT_ADDRESS,
+        functionName: "can_decrypt",
+        //@ts-ignore
+        functionParams: [userExpectedIrisId.toString(), ":userAddress"],
+        functionAbi: CAN_DECRYPT_FUNCTION_ABI,
+        chain,
+        returnValueTest: {
+          key: "",
+          comparator: "=",
+          value: "true",
+        },
+      },
+    ];
+
+    setSignUpProcess("2");
+    // encrypt the keystring
+    const {
+      encryptedString: encryptedW3SigningKeyString,
+      encryptedSymmetricKey,
+    } = await lit.encrypt(keyString, evmContractConditions);
+
+    // store the keystring encrypted
+    const packagedData = {
+      encryptedW3SigningKeyString,
+      encryptedSymmetricKey,
+      evmContractConditions,
+    };
+
+    setSignUpProcess("3");
+
+    // get the file to store as json
+    const { files, fileName } = w3Storage.makeFileObjects(
+      packagedData,
+      //@ts-ignore
+      account,
+      SIGNING_KEY_FILE_TYPE
+    );
+
+    // get the signing key uri
+    const { encryptedContentURI: signingKeyURI, cid } =
+      await w3Storage.storeFiles(files, fileName);
+
+    setSigningKeyCid(cid);
+    setSignUpProcess("4");
+  };
+
+  function displayError(err: string) {
+    if (err.includes("#01")) {
+      return "Account Already Exist With Connected Address";
+    }
+    if (err.includes("#02")) {
+      return "Username Aready Taken";
+    }
+  }
+
+  useEffect(() => {
+    let connected = localStorage.getItem("connected");
+    console.log("CNCTD", connected);
+    if (connected != ADDRESS_ZERO) connect({ connector });
+  }, []);
+
   return (
     <>
       <Head>
@@ -14,101 +147,101 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
+      <main>
+        <Navbar setShowPopup={setShowPopup} noSignUp={false} />
 
-        <div className={styles.center}>
+        <div className={showPopup ? styles.containerBlur : styles.container}>
+          <div className={styles.texts}>
+            <h1>Me, Myself & A.I</h1>
+            <h3>Empowering memories, easing dementia.</h3>
+            <p>
+              Your Personal Dementia Companion. Our innovative platform ensures
+              you live life to the fullest, free from the worry of forgetting.
+              From daily reminders to capturing real-time moments, our trusted
+              assistant <span className="blueText">Iris</span> is by your side,
+              preserving and sharing your cherished memories.
+            </p>
+            <Link href="/">Learn More &gt;</Link>
+          </div>
           <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
+            src="/illustration/heroIllustration.png"
+            height="500"
+            width="500"
+            alt="ai-brain"
           />
         </div>
 
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
+        {showPopup && (
+          <div className={styles.popup}>
+            {signUpProcess == "" && (
+              <div className={styles.inputContainer}>
+                <div className={styles.createTitle}>
+                  <p>Sign Up</p>
+                  <img
+                    src="/icons/cancel.png"
+                    onClick={() => setShowPopup(false)}
+                  />
+                </div>
+                <input
+                  placeholder="UserName"
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+                <input
+                  placeholder="Aid Address"
+                  onChange={(e) => setAid(e.target.value)}
+                />
 
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
+                <button onClick={async () => await SignUp()}>Sign Up</button>
+              </div>
+            )}
 
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
+            {signUpProcess != "" && (
+              <div className={styles.loaderContainer}>
+                {error ? (
+                  <div className={styles.errorTitle}>
+                    <div className={styles.top}>
+                      <p className={styles.headerError}>Error!</p>
+                      <img
+                        src="/icons/cancel.png"
+                        onClick={() => {
+                          setShowPopup(false);
+                          setSignUpProcess("");
+                        }}
+                      />
+                    </div>
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+                    {error.message && (
+                      <p style={{ color: "red" }}>
+                        {displayError(error.message)}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {signUpProcess != "4" ? (
+                      <div className={styles.loader}></div>
+                    ) : (
+                      <h3 style={{ margin: "30px 0px", fontSize: "30px" }}>
+                        Create Account
+                      </h3>
+                    )}
+                    <>
+                      {signUpProcess == "1" && <p>Creating memory...</p>}
+                      {signUpProcess == "2" && <p>Setting Up Memory...</p>}
+                      {signUpProcess == "3" && <p>Final touches...</p>}
+                      {signUpProcess == "4" && (
+                        <button onClick={() => signUpWrite?.()}>
+                          Create Account
+                        </button>
+                      )}
+                    </>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </main>
     </>
-  )
+  );
 }
