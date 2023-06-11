@@ -24,6 +24,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useQuery } from "@apollo/client";
 import { APPOINTMENT_QUERIES } from "@/utils/queries";
 
+// @ts-ignore
 export const AppointmentContainer = ({ aides, user }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);

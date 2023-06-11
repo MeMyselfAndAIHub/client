@@ -77,7 +77,7 @@ export const FeedMemory = () => {
       evmContractConditions,
     } = await previousMemoryResponse.json();
 
-    // decrypt the previous memoryand store in state
+    // decrypt the previous memorya nd store in state
     const { decryptedString: previousMemory } = await lit.decrypt(
       evmContractConditions,
       encryptedSymmetricKey,
