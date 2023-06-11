@@ -4,6 +4,7 @@ export const MEDICATION_QUERIES = gql`
   query GetMedications($deleted: Boolean, $userAddress: Bytes) {
     medications(where: { deleted: $deleted, userAddress: $userAddress }) {
       id
+      reminderId
       userAddress
       totalTabsAmount
       days
@@ -19,6 +20,7 @@ export const DAILY_ROUTINE_QUERIES = gql`
   query GetDailyRoutines($deleted: Boolean, $userAddress: Bytes) {
     dailyRoutines(where: { deleted: $deleted, userAddress: $userAddress }) {
       id
+      reminderId
       userAddress
       days
       importance
@@ -32,6 +34,7 @@ export const APPOINTMENT_QUERIES = gql`
   query GetAQppointments($deleted: Boolean, $userAddress: Bytes) {
     appointments(where: { deleted: $deleted, userAddress: $userAddress }) {
       id
+      reminderId
       userAddress
       days
       importance

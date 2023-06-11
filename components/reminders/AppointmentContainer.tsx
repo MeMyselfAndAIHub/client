@@ -24,25 +24,26 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useQuery } from "@apollo/client";
 import { APPOINTMENT_QUERIES } from "@/utils/queries";
 
-export const AppointmentContainer = () => {
+export const AppointmentContainer = ({ aides, user }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
   const [appointmentDescription, setAppointmentDescription] =
     useState<string>("");
   const [selectedImportance, setSelectedImportance] = useState();
   const [locationDescription, setLocationDescription] = useState<string>();
+  const [selectedReminderId, setselectedReminderId] = useState<string>("");
 
   const { address: account } = useAccount();
   const connector = new MetaMaskConnector();
   const { connect } = useConnect();
 
   const { data } = useQuery(APPOINTMENT_QUERIES, {
-    variables: { deleted: false, userAddress: account },
+    variables: { deleted: false, userAddress: aides ? user : account },
   });
 
   console.log(data);
 
-  const { config } = usePrepareContractWrite({
+  const { config, error: createError } = usePrepareContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: "create_appointment",
@@ -57,6 +58,14 @@ export const AppointmentContainer = () => {
     ],
   });
   const { write: create } = useContractWrite(config);
+
+  const { config: deleteConfig, error: deleteError } = usePrepareContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: "delete_appointment",
+    args: [account, selectedReminderId],
+  });
+  const { write: deleteAppointment } = useContractWrite(deleteConfig);
 
   // Functions
   const handleOpenPopup = () => {
@@ -83,7 +92,9 @@ export const AppointmentContainer = () => {
     <div className={styles.appointmentContainer}>
       <div className={showPopup ? styles.titleBlur : styles.title}>
         <h3>Appointments</h3>
-        <button onClick={handleOpenPopup}>Add</button>
+        {deleteError && !deleteError.message.includes("#01") && (
+          <button onClick={handleOpenPopup}>Add</button>
+        )}
       </div>
 
       <div
@@ -137,6 +148,31 @@ export const AppointmentContainer = () => {
                   <div className={styles.location}>
                     <h4>Location</h4>
                     <p>{appointment.locationDescription}</p>
+
+                    {appointment.reminderId != selectedReminderId &&
+                      deleteError &&
+                      !deleteError.message.includes("#01") && (
+                        <button
+                          className={styles.delete}
+                          onClick={() => {
+                            setselectedReminderId(appointment.reminderId);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      )}
+
+                    {appointment.reminderId == selectedReminderId &&
+                      deleteError &&
+                      !deleteError.message.includes("#01") && (
+                        <button
+                          className={styles.confirmDelete}
+                          disabled={!deleteAppointment}
+                          onClick={() => deleteAppointment?.()}
+                        >
+                          Confirm Delete
+                        </button>
+                      )}
                   </div>
                 </div>
               </div>

@@ -20,18 +20,20 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { useQuery } from "@apollo/client";
 import { DAILY_ROUTINE_QUERIES } from "@/utils/queries";
 
-export const DailyRoutineContainer = () => {
+// @ts-ignore
+export const DailyRoutineContainer = ({ aides, user }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
   const [routineDescriptionInput, setRoutineDescriptionInput] = useState();
   const [selectedImportance, setSelectedImportance] = useState();
+  const [selectedReminderId, setselectedReminderId] = useState<string>("");
 
   const { address: account } = useAccount();
   const connector = new MetaMaskConnector();
   const { connect } = useConnect();
 
   const { loading, error, data } = useQuery(DAILY_ROUTINE_QUERIES, {
-    variables: { deleted: false, userAddress: account },
+    variables: { deleted: false, userAddress: aides ? user : account },
   });
 
   const { config } = usePrepareContractWrite({
@@ -48,6 +50,14 @@ export const DailyRoutineContainer = () => {
     ],
   });
   const { write: create } = useContractWrite(config);
+
+  const { config: deleteConfig, error: deleteError } = usePrepareContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: "delete_daily_routine",
+    args: [account, selectedReminderId],
+  });
+  const { write: deleteDailyRoutine } = useContractWrite(deleteConfig);
 
   // Functions
   const handleOpenPopup = () => {
@@ -77,7 +87,9 @@ export const DailyRoutineContainer = () => {
     <div className={styles.dailyRoutineContainer}>
       <div className={showPopup ? styles.titleBlur : styles.title}>
         <h3>Daily Routines</h3>
-        <button onClick={handleOpenPopup}>Add</button>
+        {deleteError && !deleteError.message.includes("#01") && (
+          <button onClick={handleOpenPopup}>Add</button>
+        )}
       </div>
 
       <div
@@ -108,6 +120,31 @@ export const DailyRoutineContainer = () => {
                       );
                     })}
                   </div>
+
+                  {routine.reminderId != selectedReminderId &&
+                    deleteError &&
+                    !deleteError.message.includes("#01") && (
+                      <button
+                        className={styles.delete}
+                        onClick={() => {
+                          setselectedReminderId(routine.reminderId);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    )}
+
+                  {routine.reminderId == selectedReminderId &&
+                    deleteError &&
+                    !deleteError.message.includes("#01") && (
+                      <button
+                        className={styles.confirmDelete}
+                        disabled={!deleteDailyRoutine}
+                        onClick={() => deleteDailyRoutine?.()}
+                      >
+                        Confirm Delete
+                      </button>
+                    )}
                 </div>
 
                 <div className={styles.right}>

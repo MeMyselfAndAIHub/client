@@ -26,7 +26,7 @@ export const Navbar = ({ setShowPopup, noSignUp }) => {
       <div className={styles.texts}>
         <Link href="/" className={styles.logo}>
           <Image
-            src="/icons/navbarIcon.png"
+            src="/illustration/heroIllustration.png"
             height="55"
             width="60"
             alt="ai-brain"
@@ -36,6 +36,12 @@ export const Navbar = ({ setShowPopup, noSignUp }) => {
         {isConnected && (
           <Link href="/application" className={styles.navText}>
             Upkeeps
+          </Link>
+        )}
+
+        {isConnected && (
+          <Link href="/application/aides" className={styles.navText}>
+            Aides
           </Link>
         )}
 
@@ -75,7 +81,12 @@ export const Navbar = ({ setShowPopup, noSignUp }) => {
         )}
 
         {!isConnected && (
-          <button className={styles.navButtonsTwo}>Connect</button>
+          <button
+            className={styles.navButtonsTwo}
+            onClick={() => connect({ connector })}
+          >
+            Connect
+          </button>
         )}
       </div>
     </div>

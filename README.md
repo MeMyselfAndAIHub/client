@@ -16,7 +16,7 @@ Upkeeps were designed with our main users in mind, providing them with a conveni
 
 ## Aides
 
-Aides is a special feature incorporated into the smart contract functionality of the app, although it wasn't implemented in the frontend due to time constraints. The idea behind aides is to provide close support to users experiencing memory loss, assisting them in managing their upkeeps and keeping their memories updated with important events as they happen. Aides offer additional help and much more to those who need it.
+Aides is a special feature incorporated into our application. The idea behind aides is to provide close support to users experiencing memory loss, assisting them in managing their upkeeps and keeping their memories updated with important events as they happen. Aides offer additional help and much more to users who suffer from dementia, giving them someone close to rely on to manage upkeeps and activities on the application.
 
 ## Iris
 
@@ -34,6 +34,20 @@ Now here's a feature that isn't just limited to our primary audience of individu
 - Frontend Repository, containing the Langchain, LIT and Web3.storage code - https://github.com/MeMyselfAndAIHub/client
 - Smart Contract Repository - https://github.com/MeMyselfAndAIHub/smart_contracts
 - Contract Address Deployed on Mumbai - 0xc4787aA24E51a22f92910F97320aA98e167c7695
-- Link To Video Demo -
+- Link To Video Demo - https://youtu.be/6ISXtmkm_kA
 - Link To Live Site - https://client-delta-six.vercel.app/
-- Link to Chainlink Time Based Triggers - https://automation.chain.link/mumbai/78250884674420149499567597107837171836915241595208721591796294044654571721181
+- Link To Documentation - https://francis-4.gitbook.io/me-myself-and-a.i/overview/our-features
+
+### Interesting Sections
+
+- [Langchain Class](/helpers/langchain.ts)
+
+- [Lit Class](/helpers/lit.ts)
+
+- [Web3 storage Class](/helpers/storage.ts)
+
+- `getCurrentMemory` and `Ask` functions [here](/components/iris/AskMemory.tsx)
+
+- `getPreviousMemory` and `UpdateMemory` functions [here](/components/iris/FeedMemory.tsx)
+
+- `UpdateMemory` function [here](/pages/application/tags.tsx)

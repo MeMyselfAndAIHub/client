@@ -13,7 +13,8 @@ import {
 } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 
-export const MedicationContainer = () => {
+// @ts-ignore
+export const MedicationContainer = ({ aides, user }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   const connector = new MetaMaskConnector();
@@ -23,15 +24,20 @@ export const MedicationContainer = () => {
   // Meds Parameters
   const [tabsAmount, setTabsAmount] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [selectedDays, setSelectedDays] = useState(["", ""]);
-  const [dosage, setDosage] = useState([]);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [dosage, setDosage] = useState(["", ""]);
   const [description, setDescription] = useState<string>("");
+  const [selectedReminderId, setselectedReminderId] = useState<string>("");
 
   const { loading, error, data } = useQuery(MEDICATION_QUERIES, {
-    variables: { deleted: false, userAddress: account },
+    variables: { deleted: false, userAddress: aides ? user : account },
   });
 
-  const { config } = usePrepareContractWrite({
+  console.log(data);
+  console.log(selectedDays);
+  console.log(dosage);
+
+  const { config: createConfig } = usePrepareContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: "create_medication",
@@ -46,7 +52,15 @@ export const MedicationContainer = () => {
       },
     ],
   });
-  const { write: create } = useContractWrite(config);
+  const { write: create } = useContractWrite(createConfig);
+
+  const { config: deleteConfig, error: deleteError } = usePrepareContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: "delete_medication",
+    args: [account, selectedReminderId],
+  });
+  const { write: deleteMeds } = useContractWrite(deleteConfig);
   //@ts-ignore
   const handleInputChange = (event, index) => {
     //@ts-ignore
@@ -76,7 +90,9 @@ export const MedicationContainer = () => {
   const handleDayClick = (dayIndex) => {
     const number = dayIndex + 1;
 
+    // @ts-ignore
     if (!selectedDays.includes(number))
+      // @ts-ignore
       setSelectedDays((prevSelectedDays) => [...prevSelectedDays, number]);
   };
 
@@ -88,7 +104,9 @@ export const MedicationContainer = () => {
     <div className={styles.medicationContainer}>
       <div className={showPopup ? styles.titleBlur : styles.title}>
         <h3>Medication Reminders</h3>
-        <button onClick={handleOpenPopup}>Add</button>
+        {deleteError && !deleteError.message.includes("#01") && (
+          <button onClick={handleOpenPopup}>Add</button>
+        )}
       </div>
 
       <div className={showPopup ? styles.medBoxesBlur : styles.medBoxes}>
@@ -141,6 +159,31 @@ export const MedicationContainer = () => {
                   <h4>Description</h4>
                   <p>{meds.desc}</p>
                 </div>
+
+                {meds.reminderId != selectedReminderId &&
+                  deleteError &&
+                  !deleteError.message.includes("#01") && (
+                    <button
+                      className={styles.delete}
+                      onClick={() => {
+                        setselectedReminderId(meds.reminderId);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+
+                {meds.reminderId == selectedReminderId &&
+                  deleteError &&
+                  !deleteError.message.includes("#01") && (
+                    <button
+                      className={styles.confirmDelete}
+                      disabled={!deleteMeds}
+                      onClick={() => deleteMeds?.()}
+                    >
+                      Confirm Delete
+                    </button>
+                  )}
               </div>
             );
           })

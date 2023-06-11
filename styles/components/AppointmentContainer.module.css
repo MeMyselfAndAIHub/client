@@ -125,6 +125,24 @@
   font-size: 14px;
 }
 
+.delete {
+  background-color: #009eff;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.confirmDelete {
+  background-color: #e41414;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #fff;
+  margin-top: 20px;
+}
+
 /* POP UP */
 
 .popup {

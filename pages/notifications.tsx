@@ -39,7 +39,7 @@ export default function Notifications() {
         <Navbar setShowPopup={setShowPopup} noSignUp={true} />
 
         <div className={styles.notifications}>
-          <h3>Notifications</h3>
+          <h3>Me, Myself & A.I | Notifications</h3>
           <div className={styles.notifcationBoxes}>
             {data && data.dailyReminders.length > 0 ? (
               //@ts-ignore
@@ -59,7 +59,9 @@ export default function Notifications() {
                 );
               })
             ) : (
-              <p>No Know Reminders Yet!</p>
+              <p>
+                No <b>Know You Reminders</b> Yet!
+              </p>
             )}
           </div>
         </div>
