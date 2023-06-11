@@ -37,6 +37,7 @@ Now here's a feature that isn't just limited to our primary audience of individu
 - Link To Video Demo - https://youtu.be/6ISXtmkm_kA
 - Link To Live Site - https://client-delta-six.vercel.app/
 - Link To Documentation - https://francis-4.gitbook.io/me-myself-and-a.i/overview/our-features
+- Link to Chainlink Time Based Trigger - https://automation.chain.link/mumbai/78250884674420149499567597107837171836915241595208721591796294044654571721181
 
 ### Interesting Sections
 
