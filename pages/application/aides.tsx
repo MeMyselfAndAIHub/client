@@ -29,6 +29,7 @@ export default function Aides() {
         <div className={styles.userInput}>
           <input
             placeholder="User Address"
+            // @ts-ignore
             onChange={(e) => setUserAddr(e.target.value)}
           />
         </div>

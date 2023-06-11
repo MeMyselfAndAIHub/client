@@ -24,8 +24,11 @@ export default function Landing() {
         {/* @ts-ignore */}
         <Navbar noSignUp={true} />
         <ReminderBar setOption={setSelectedOption} option={selectedOption} />
+        {/* @ts-ignore */}
         {selectedOption == "medication" && <MedicationContainer />}
+        {/* @ts-ignore */}
         {selectedOption == "daily routines" && <DailyRoutineContainer />}
+        {/* @ts-ignore */}
         {selectedOption == "appointments" && <AppointmentContainer />}
       </main>
     </>
