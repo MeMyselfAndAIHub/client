@@ -52,3 +52,7 @@ Now here's a feature that isn't just limited to our primary audience of individu
 - `getPreviousMemory` and `UpdateMemory` functions [here](/components/iris/FeedMemory.tsx)
 
 - `UpdateMemory` function [here](/pages/application/tags.tsx)
+
+## NOTE
+
+The live site can be buggy at times. If you encounter any issues with it please run the site locally on your machine. Creating a .env file containing the following variables `NEXT_PUBLIC_WEB3STORAGE_TOKEN` with your own web3.storage teoken, `NEXT_PUBLIC_ALCHEMY_API_KEY` with your alchemy api key, `NEXT_PUBLIC_OPENAI_API_KEY` with your open ai api key. Thanks!
